@@ -1,2 +1,2 @@
 # log999-large-log-viewer
-View and work with very large log files
+A log viewer written using custom JavaFX control to support reading/searching/working with very large log files.
