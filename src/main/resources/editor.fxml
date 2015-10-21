@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="496.0" prefWidth="856.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.blinglog.poc.EditorController">
+   <children>
+      <ToolBar prefHeight="40.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <Button fx:id="openButton" mnemonicParsing="false" text="Open" />
+            <Separator layoutX="295.0" layoutY="10.0" orientation="VERTICAL" prefHeight="1.0" />
+            <Button fx:id="buttonZoomIn" mnemonicParsing="false" text="+" />
+            <Button fx:id="buttonZoomOut" layoutX="109.0" layoutY="11.0" mnemonicParsing="false" text="-" />
+            <ToggleButton fx:id="wrapToggleButton" mnemonicParsing="false" style="-fx-background-radius: 0;" text="WRAP">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </ToggleButton>
+            <Separator layoutX="305.0" layoutY="10.0" orientation="VERTICAL" prefHeight="1.0" />
+            <Button fx:id="buttonMarkSelected" layoutX="155.0" layoutY="11.0" mnemonicParsing="false" text="T" />
+            <ToggleButton layoutX="133.0" layoutY="14.0" mnemonicParsing="false" style="-fx-background-radius: 0;" text="HIDE">
+               <font>
+                  <Font size="10.0" />
+               </font>
+            </ToggleButton>
+            <Separator layoutX="181.0" layoutY="10.0" orientation="VERTICAL" prefHeight="1.0" />
+            <Button fx:id="buttonBold" mnemonicParsing="false" text="B">
+               <font>
+                  <Font name="System Bold Italic" size="13.0" />
+               </font>
+            </Button>
+            <SplitMenuButton fx:id="backgroundColourSplitMenu" mnemonicParsing="false" prefHeight="26.0" prefWidth="45.0" text="SplitMenuButton">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Action 1" />
+                <MenuItem mnemonicParsing="false" text="Action 2" />
+              </items>
+            </SplitMenuButton>
+            <SplitMenuButton fx:id="foregroundColourSplitMenu" layoutX="305.0" layoutY="11.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="45.0" text="SplitMenuButton">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Action 1" />
+                  <MenuItem mnemonicParsing="false" text="Action 2" />
+               </items>
+            </SplitMenuButton>
+            <Separator orientation="VERTICAL" prefHeight="1.0" />
+            <Button fx:id="buttonBackgroundHighlight" mnemonicParsing="false" text="H" />
+            <ColorPicker fx:id="backgroundColourPicker" prefHeight="26.0" prefWidth="30.0" />
+            <Button fx:id="buttonForegroundHighlight" mnemonicParsing="false" text="F" textFill="#ee0707" />
+            <ColorPicker fx:id="foregroundColourPicker" layoutX="245.0" layoutY="14.0" prefHeight="26.0" prefWidth="30.0" />
+            <TextField fx:id="quickFilterText" />
+            <Button fx:id="quickFilterButton" mnemonicParsing="false" onAction="#onQuickFilterButtonPressed" prefHeight="12.0" prefWidth="12.0" text="x">
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
+            </Button>
+        </items>
+      </ToolBar>
+      <TabPane fx:id="mainTabPane" layoutX="7.0" layoutY="40.0" prefHeight="390.0" prefWidth="624.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0" />
+      <ProgressIndicator fx:id="progressSpinner" layoutY="433.0" prefHeight="21.0" prefWidth="21.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" />
+      <ProgressBar fx:id="progressBar" layoutX="410.0" layoutY="430.0" prefWidth="200.0" progress="0.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="4.0" />
+      <Label fx:id="progressLabel" layoutX="23.0" layoutY="434.0" prefHeight="16.0" prefWidth="383.0" text="Label" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="30.0" />
+   </children>
+</AnchorPane>
