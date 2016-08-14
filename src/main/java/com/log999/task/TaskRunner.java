@@ -8,10 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class TaskRunner {
@@ -61,6 +58,11 @@ public class TaskRunner {
                 endTask(task, t);
             }
         });
+    }
+
+    void shutdownAndWait() throws InterruptedException {
+        executor.shutdown();
+        executor.awaitTermination(1, TimeUnit.SECONDS);
     }
 
     public void executeConflating(String name, String conflationKey, LogFileTask task) {
