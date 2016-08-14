@@ -1,4 +1,4 @@
-package com.blinglog.poc.task;
+package com.log999.task;
 
 public interface AbortableTask {
 

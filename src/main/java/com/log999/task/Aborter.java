@@ -1,9 +1,8 @@
-package com.blinglog.poc.task;
+package com.log999.task;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Aborter {

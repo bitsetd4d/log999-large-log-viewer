@@ -1,4 +1,4 @@
-package com.blinglog.poc.task;
+package com.log999.task;
 
 import javafx.application.Platform;
 import javafx.scene.control.Label;
@@ -18,10 +18,6 @@ public class TaskRunner {
 
     private static Logger logger = LoggerFactory.getLogger(TaskRunner.class);
 
-    private ProgressIndicator progressSpinner;
-    private Label progressLabel;
-    private ProgressBar progressBar;
-
     private AtomicInteger inProgress = new AtomicInteger();
 
     private static TaskRunner INSTANCE = new TaskRunner();
@@ -34,17 +30,21 @@ public class TaskRunner {
     private ConcurrentMap<String,LogFileTask> conflatableTasks = new ConcurrentHashMap<>();
     private ConcurrentMap<String,Aborter> aborters = new ConcurrentHashMap<>();
 
-    public void setControls(ProgressIndicator progressSpinner,Label progressLabel,ProgressBar progressBar) {
-        this.progressSpinner = progressSpinner;
-        this.progressLabel = progressLabel;
-        this.progressBar = progressBar;
+    private TaskFeedback taskFeedback = new TaskFeedback() {};
+
+    public interface TaskFeedback {
+        default void setVisible(boolean visible) { }
+        default void setText(String text) { }
+    }
+
+    public void setTaskFeedback(TaskFeedback taskFeedback) {
+        this.taskFeedback = taskFeedback;
         makeIdle();
     }
 
     private void makeIdle() {
-        progressSpinner.setVisible(false);
-        progressLabel.setText("");
-        progressBar.setVisible(false);
+        taskFeedback.setVisible(false);
+        taskFeedback.setText("");
     }
 
     public void execute(String name, LogFileTask task) {
@@ -100,8 +100,8 @@ public class TaskRunner {
         inProgress.incrementAndGet();
         tasks.put(task,name);
         Platform.runLater(() -> {
-            progressLabel.setText(name);
-            progressSpinner.setVisible(true);
+            taskFeedback.setText(name);
+            taskFeedback.setVisible(true);
         });
     }
 
@@ -114,14 +114,12 @@ public class TaskRunner {
         } catch (NoSuchElementException e) {}
         if (anotherRunningTaskName == null) {
             Platform.runLater(() -> {
-                progressLabel.setText("");
-                progressSpinner.setVisible(false);
+                taskFeedback.setText("");
+                taskFeedback.setVisible(false);
             });
         } else {
             String a = anotherRunningTaskName;
-            Platform.runLater(() -> {
-                progressLabel.setText(a);
-            });
+            Platform.runLater(() -> taskFeedback.setText(a));
         }
         logger.debug("Task {} ended - took {}ms",name,t);
     }

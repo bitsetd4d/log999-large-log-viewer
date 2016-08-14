@@ -1,7 +1,7 @@
 package com.blinglog.poc;
 
 import com.blinglog.poc.control.ScrollableEditor;
-import com.blinglog.poc.task.TaskRunner;
+import com.log999.task.TaskRunner;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +13,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,33 +22,61 @@ public class EditorController implements Initializable {
     private ScrollableEditor editor = ScrollableEditor.newEditor();
 
     // Toolbar
-    @FXML private Button openButton;
-    @FXML private ToggleButton wrapToggleButton;
-    @FXML private Button buttonZoomIn;
-    @FXML private Button buttonZoomOut;
-    @FXML private Button buttonMarkSelected;
-    @FXML private Button buttonBold;
-    @FXML private Button buttonForegroundHighlight;
-    @FXML private Button buttonBackgroundHighlight;
-    @FXML private ColorPicker backgroundColourPicker;
-    @FXML private ColorPicker foregroundColourPicker;
+    @FXML
+    private Button openButton;
+    @FXML
+    private ToggleButton wrapToggleButton;
+    @FXML
+    private Button buttonZoomIn;
+    @FXML
+    private Button buttonZoomOut;
+    @FXML
+    private Button buttonMarkSelected;
+    @FXML
+    private Button buttonBold;
+    @FXML
+    private Button buttonForegroundHighlight;
+    @FXML
+    private Button buttonBackgroundHighlight;
+    @FXML
+    private ColorPicker backgroundColourPicker;
+    @FXML
+    private ColorPicker foregroundColourPicker;
 
-    @FXML private TabPane mainTabPane;
+    @FXML
+    private TabPane mainTabPane;
 
-    @FXML private ProgressIndicator progressSpinner;
-    @FXML private Label progressLabel;
-    @FXML private ProgressBar progressBar;
+    @FXML
+    private ProgressIndicator progressSpinner;
+    @FXML
+    private Label progressLabel;
+    @FXML
+    private ProgressBar progressBar;
 
-    @FXML private SplitMenuButton backgroundColourSplitMenu;
-    @FXML private SplitMenuButton foregroundColourSplitMenu;
+    @FXML
+    private SplitMenuButton backgroundColourSplitMenu;
+    @FXML
+    private SplitMenuButton foregroundColourSplitMenu;
 
-    @FXML private TextField quickFilterText;
+    @FXML
+    private TextField quickFilterText;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         hookToolbar();
         editor.setup(mainTabPane);
-        TaskRunner.getInstance().setControls(progressSpinner,progressLabel,progressBar);
+        TaskRunner.TaskFeedback feedback = new TaskRunner.TaskFeedback() {
+            @Override
+            public void setVisible(boolean visible) {
+                progressSpinner.setVisible(visible);
+                progressBar.setVisible(visible);
+            }
+            @Override
+            public void setText(String text) {
+                progressLabel.setText("");
+            }
+        };
+        TaskRunner.getInstance().setTaskFeedback(feedback);
     }
 
     private void hookToolbar() {
@@ -85,13 +112,14 @@ public class EditorController implements Initializable {
         //System.out.println("Node is... "+node);
         //node.setBackground(new Background(new BackgroundFill(Color.BLUEVIOLET, CornerRadii.EMPTY, Insets.EMPTY)));
         backgroundColourSplitMenu.setOnAction(ev -> System.out.println("ACTION"));
-        backgroundColourSplitMenu.setOnContextMenuRequested(ev -> System.out.println("MENU REQ") );
+        backgroundColourSplitMenu.setOnContextMenuRequested(ev -> System.out.println("MENU REQ"));
 
-        quickFilterText.textProperty().addListener((obs,old,nv) -> editor.onQuickFilterTextChanged(nv) );
+        quickFilterText.textProperty().addListener((obs, old, nv) -> editor.onQuickFilterTextChanged(nv));
 
     }
 
-    @FXML public void onQuickFilterButtonPressed(ActionEvent ev) {
+    @FXML
+    public void onQuickFilterButtonPressed(ActionEvent ev) {
         System.out.println("FILTER BUTTON PRESSED");
     }
 

@@ -7,8 +7,7 @@ import com.blinglog.poc.file.LogFileAccess;
 import com.blinglog.poc.file.LogFilePage;
 import com.blinglog.poc.file.LogFilePosition;
 import com.blinglog.poc.markup.MarkupMemory;
-import com.blinglog.poc.task.LogFileTask;
-import com.blinglog.poc.task.TaskRunner;
+import com.log999.task.TaskRunner;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import org.slf4j.Logger;
@@ -17,8 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  *
