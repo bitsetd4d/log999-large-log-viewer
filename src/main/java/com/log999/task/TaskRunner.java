@@ -1,15 +1,17 @@
 package com.log999.task;
 
 import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.NoSuchElementException;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TaskRunner {
 
@@ -18,20 +20,27 @@ public class TaskRunner {
     private AtomicInteger inProgress = new AtomicInteger();
 
     private static TaskRunner INSTANCE = new TaskRunner();
-    public static TaskRunner getInstance() { return INSTANCE; }
+
+    public static TaskRunner getInstance() {
+        return INSTANCE;
+    }
 
     private ExecutorService executor = Executors.newCachedThreadPool();
     private ExecutorService conflatingExecutor = Executors.newSingleThreadExecutor();  // If made >1 thread then need to prevent a task with same key executing > 1 once simultaneously
 
-    private ConcurrentMap<LogFileTask,String> tasks = new ConcurrentHashMap<>();
-    private ConcurrentMap<String,LogFileTask> conflatableTasks = new ConcurrentHashMap<>();
-    private ConcurrentMap<String,Aborter> aborters = new ConcurrentHashMap<>();
+    private ConcurrentMap<LogFileTask, String> tasks = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, LogFileTask> conflatableTasks = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, Aborter> aborters = new ConcurrentHashMap<>();
 
-    private TaskFeedback taskFeedback = new TaskFeedback() {};
+    private TaskFeedback taskFeedback = new TaskFeedback() {
+    };
 
     public interface TaskFeedback {
-        default void setVisible(boolean visible) { }
-        default void setText(String text) { }
+        default void setVisible(boolean visible) {
+        }
+
+        default void setText(String text) {
+        }
     }
 
     public void setTaskFeedback(TaskFeedback taskFeedback) {
@@ -53,7 +62,7 @@ public class TaskRunner {
                 task.run();
                 t = System.currentTimeMillis() - t1;
             } catch (Exception e) {
-                logger.error("Error executing task",e);
+                logger.error("Error executing task", e);
             } finally {
                 endTask(task, t);
             }
@@ -62,23 +71,25 @@ public class TaskRunner {
 
     void shutdownAndWait() throws InterruptedException {
         executor.shutdown();
-        executor.awaitTermination(1, TimeUnit.SECONDS);
+        conflatingExecutor.shutdown();
+        executor.awaitTermination(1, SECONDS);
+        conflatingExecutor.awaitTermination(1, SECONDS);
     }
 
     public void executeConflating(String name, String conflationKey, LogFileTask task) {
-        conflatableTasks.put(conflationKey,task);
+        conflatableTasks.put(conflationKey, task);
         conflatingExecutor.execute(() -> {
             long t = 0;
             try {
                 long t1 = System.currentTimeMillis();
-                LogFileTask ct = conflatableTasks.get(conflationKey);
+                LogFileTask ct = conflatableTasks.remove(conflationKey);
                 if (ct != null) {
-                    startTask(name,ct);
+                    startTask(name, ct);
                     ct.run();
                 }
                 t = System.currentTimeMillis() - t1;
             } catch (Exception e) {
-                logger.error("Error executing task",e);
+                logger.error("Error executing task", e);
             } finally {
                 endTask(task, t);
             }
@@ -86,21 +97,21 @@ public class TaskRunner {
     }
 
     public void executeAbortably(String name, String conflationKey, AbortableTask task) {
-        Aborter a = aborters.computeIfAbsent(conflationKey,k -> new Aborter());
+        Aborter a = aborters.computeIfAbsent(conflationKey, k -> new Aborter());
         a.abort();
         executor.execute(() -> {
             try {
                 task.run(a);
             } catch (Exception e) {
-                logger.error("Error executing task",e);
+                logger.error("Error executing task", e);
             }
         });
     }
 
     private void startTask(String name, LogFileTask task) {
-        logger.debug("Start task {}",name);
+        logger.debug("Start task {}", name);
         inProgress.incrementAndGet();
-        tasks.put(task,name);
+        tasks.put(task, name);
         Platform.runLater(() -> {
             taskFeedback.setText(name);
             taskFeedback.setVisible(true);
@@ -113,7 +124,8 @@ public class TaskRunner {
         String anotherRunningTaskName = null;
         try {
             anotherRunningTaskName = tasks.values().iterator().next();
-        } catch (NoSuchElementException e) {}
+        } catch (NoSuchElementException e) {
+        }
         if (anotherRunningTaskName == null) {
             Platform.runLater(() -> {
                 taskFeedback.setText("");
@@ -123,7 +135,7 @@ public class TaskRunner {
             String a = anotherRunningTaskName;
             Platform.runLater(() -> taskFeedback.setText(a));
         }
-        logger.debug("Task {} ended - took {}ms",name,t);
+        logger.debug("Task {} ended - took {}ms", name, t);
     }
 
 }
