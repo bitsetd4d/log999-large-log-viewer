@@ -1,14 +1,12 @@
 package com.log999.task;
 
+import com.google.common.annotations.VisibleForTesting;
 import javafx.application.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.NoSuchElementException;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -26,14 +24,16 @@ public class TaskRunner {
     }
 
     private ExecutorService executor = Executors.newCachedThreadPool();
-    private ExecutorService conflatingExecutor = Executors.newSingleThreadExecutor();  // If made >1 thread then need to prevent a task with same key executing > 1 once simultaneously
+    private ConcurrentHashMap<String,ExecutorService> conflatingExecutors = new ConcurrentHashMap<>();
 
     private ConcurrentMap<LogFileTask, String> tasks = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LogFileTask> conflatableTasks = new ConcurrentHashMap<>();
     private ConcurrentMap<String, Aborter> aborters = new ConcurrentHashMap<>();
 
-    private TaskFeedback taskFeedback = new TaskFeedback() {
-    };
+    private TaskFeedback taskFeedback = new TaskFeedback() {};
+
+    @VisibleForTesting
+    AtomicInteger conflatedTaskCount = new AtomicInteger(0);
 
     public interface TaskFeedback {
         default void setVisible(boolean visible) {
@@ -71,34 +71,48 @@ public class TaskRunner {
 
     void shutdownAndWait() throws InterruptedException {
         executor.shutdown();
-        conflatingExecutor.shutdown();
+        conflatingExecutors.forEach((key,exec) -> exec.shutdown());
         executor.awaitTermination(1, SECONDS);
-        conflatingExecutor.awaitTermination(1, SECONDS);
+        conflatingExecutors.forEach((key,exec) -> {
+            try {
+                exec.awaitTermination(1, SECONDS);
+            } catch (Exception e) {}
+        });
     }
 
     public void executeConflating(String name, String conflationKey, LogFileTask task) {
-        conflatableTasks.put(conflationKey, task);
-        conflatingExecutor.execute(() -> {
-            long t = 0;
-            try {
-                long t1 = System.currentTimeMillis();
-                LogFileTask ct = conflatableTasks.remove(conflationKey);
-                if (ct != null) {
-                    startTask(name, ct);
-                    ct.run();
-                }
-                t = System.currentTimeMillis() - t1;
-            } catch (Exception e) {
-                logger.error("Error executing task", e);
-            } finally {
-                endTask(task, t);
+        LogFileTask existingTask = conflatableTasks.put(conflationKey, task);
+        if (existingTask == null) conflatedTaskCount.incrementAndGet();
+        getConflatingExecutor(conflationKey).execute(() -> runConflatableTask(name, conflationKey));
+    }
+
+    private Executor getConflatingExecutor(String conflationKey) {
+        return conflatingExecutors.computeIfAbsent(conflationKey, key -> Executors.newSingleThreadExecutor());
+    }
+
+    private void runConflatableTask(String name, String conflationKey) {
+        LogFileTask task = null;
+        long t = 0;
+        try {
+            long t1 = System.currentTimeMillis();
+            task = conflatableTasks.remove(conflationKey);
+            if (task != null) {
+                startTask(name, task);
+                task.run();
             }
-        });
+            t = System.currentTimeMillis() - t1;
+        } catch (Exception e) {
+            logger.error("Error executing task", e);
+        } finally {
+            if (task != null) {
+                endTask(task, t);
+                conflatedTaskCount.decrementAndGet();
+            }
+        }
     }
 
     public void executeAbortably(String name, String conflationKey, AbortableTask task) {
         Aborter a = aborters.computeIfAbsent(conflationKey, k -> new Aborter());
-        a.abort();
         executor.execute(() -> {
             try {
                 task.run(a);

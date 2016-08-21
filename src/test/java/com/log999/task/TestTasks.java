@@ -15,7 +15,6 @@ import java.util.stream.IntStream;
 import static com.log999.task.JavaFXTestUtil.waitForJavaFxToCatchup;
 import static java.lang.Thread.sleep;
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static junit.framework.TestCase.fail;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -85,6 +84,7 @@ public class TestTasks {
     public void testUnrelatedConflatingTasksDoNotInterfereWithEachOther() throws InterruptedException {
         ControllableTestTask task1 = new ControllableTestTask();
         ControllableTestTask task2 = new ControllableTestTask();
+        assertThat("No tasks are running", taskRunner.conflatedTaskCount.get(), is(0));
         taskRunner.executeConflating("task1", "key1", task1);
         taskRunner.executeConflating("task2", "key2", task2);
         task1.waitForTaskToStart();
@@ -93,14 +93,17 @@ public class TestTasks {
         // Both tasks running together
         assertThat("Task 1 is running", task1.isTaskRunningNow(), is(true));
         assertThat("Task 2 is running", task2.isTaskRunningNow(), is(true));
+        assertThat("Both tasks are running", taskRunner.conflatedTaskCount.get(), is(2));
 
         task1.allowTaskToComplete();
         assertThat("Task 1 is not running", task1.isTaskRunningNow(), is(false));
         assertThat("Task 2 is still running", task2.isTaskRunningNow(), is(true));
+        assertThat("1 tasks is running", taskRunner.conflatedTaskCount.get(), is(1));
 
         task2.allowTaskToComplete();
         assertThat("Task 1 is not running", task1.isTaskRunningNow(), is(false));
         assertThat("Task 2 is not running", task2.isTaskRunningNow(), is(false));
+        assertThat("No tasks are running", taskRunner.conflatedTaskCount.get(), is(0));
     }
 
     @Test
@@ -134,6 +137,7 @@ public class TestTasks {
 
         assertThat("Some tasks should have ran", started.get(), greaterThan(0));
         assertThat("There should be no tasks running", running.get(), is(0));
+        assertThat("The count should show no tasks are running", taskRunner.conflatedTaskCount.get(), is(0));
         assertThat("All started tasks should have finished", started.get(), is(finished.get()));
         System.out.printf("Number of tasks that actually ran was %d%n", started.get());
     }
@@ -202,7 +206,7 @@ public class TestTasks {
             ControllableTestTask task = new ControllableTestTask(() -> {
                 count.incrementAndGet();
                 System.out.println(String.format("Task %d executed", index));
-                throw new RuntimeException("Task went wrong");
+                throw new RuntimeException("Task deliberately went wrong");
             });
             task.allowTaskToComplete();
             taskRunner.executeConflating("Increment Counter", "key1", task);
@@ -214,11 +218,6 @@ public class TestTasks {
         sleep(500);
 
         assertThat("Only one of the increment counter tasks was executed", count.get(), is(1));
-    }
-
-    @Test
-    public void testTasksThrowingExceptionsDontInterfereWithOtherTasks() {
-        fail("This needs adding");
     }
 
     private static class ControllableTestTask implements LogFileTask {
@@ -261,6 +260,9 @@ public class TestTasks {
 
         void allowTaskToComplete() {
             taskWaitToComplete.countDown();
+            try {
+                sleep(10);
+            } catch (Exception e) {}
         }
     }
 
