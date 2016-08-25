@@ -24,13 +24,15 @@ public class TaskRunner {
     }
 
     private ExecutorService executor = Executors.newCachedThreadPool();
-    private ConcurrentHashMap<String,ExecutorService> conflatingExecutors = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, ExecutorService> conflatingExecutors = new ConcurrentHashMap<>();
 
     private ConcurrentMap<LogFileTask, String> tasks = new ConcurrentHashMap<>();
     private ConcurrentMap<String, LogFileTask> conflatableTasks = new ConcurrentHashMap<>();
+    private ConcurrentMap<String, AbortableTask> abortableTasks = new ConcurrentHashMap<>();
     private ConcurrentMap<String, Aborter> aborters = new ConcurrentHashMap<>();
 
-    private TaskFeedback taskFeedback = new TaskFeedback() {};
+    private TaskFeedback taskFeedback = new TaskFeedback() {
+    };
 
     @VisibleForTesting
     AtomicInteger conflatedTaskCount = new AtomicInteger(0);
@@ -71,12 +73,13 @@ public class TaskRunner {
 
     void shutdownAndWait() throws InterruptedException {
         executor.shutdown();
-        conflatingExecutors.forEach((key,exec) -> exec.shutdown());
+        conflatingExecutors.forEach((key, exec) -> exec.shutdown());
         executor.awaitTermination(1, SECONDS);
-        conflatingExecutors.forEach((key,exec) -> {
+        conflatingExecutors.forEach((key, exec) -> {
             try {
                 exec.awaitTermination(1, SECONDS);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         });
     }
 
@@ -112,14 +115,27 @@ public class TaskRunner {
     }
 
     public void executeAbortably(String name, String conflationKey, AbortableTask task) {
+        AbortableTask existingTask = abortableTasks.put(conflationKey, task);
+        if (existingTask == null) conflatedTaskCount.incrementAndGet();
         Aborter a = aborters.computeIfAbsent(conflationKey, k -> new Aborter());
-        executor.execute(() -> {
-            try {
-                task.run(a);
-            } catch (Exception e) {
-                logger.error("Error executing task", e);
+        a.abort(); // Abort current task
+        getConflatingExecutor(conflationKey).execute(() -> runAbortableTask(name, conflationKey, a));
+    }
+
+    private void runAbortableTask(String name, String conflationKey, Aborter aborter) {
+        AbortableTask task = null;
+        try {
+            task = abortableTasks.remove(conflationKey);
+            if (task != null) {
+                task.run(aborter);
             }
-        });
+        } catch (Exception e) {
+            logger.error("Error executing task", e);
+        } finally {
+            if (task != null) {
+                conflatedTaskCount.decrementAndGet();
+            }
+        }
     }
 
     private void startTask(String name, LogFileTask task) {

@@ -81,7 +81,7 @@ public class TestTasks {
     }
 
     @Test
-    public void testUnrelatedConflatingTasksDoNotInterfereWithEachOther() throws InterruptedException {
+    public void unrelatedConflatingTasksShouldNotInterfereWithEachOther() throws InterruptedException {
         ControllableTestTask task1 = new ControllableTestTask();
         ControllableTestTask task2 = new ControllableTestTask();
         assertThat("No tasks are running", taskRunner.conflatedTaskCount.get(), is(0));
@@ -107,7 +107,7 @@ public class TestTasks {
     }
 
     @Test
-    public void testTasksWithSameConflationKeyNeverRunAtTheSameTime() throws Exception {
+    public void tasksWithSameConflationKeyNeverRunAtTheSameTime() throws Exception {
         AtomicInteger running = new AtomicInteger(0);
         AtomicInteger started = new AtomicInteger(0);
         AtomicInteger finished = new AtomicInteger(0);
@@ -143,7 +143,7 @@ public class TestTasks {
     }
 
     @Test
-    public void testTasksConflateSuchThatATaskWillExecuteAfterTaskRunningWithSameKey() throws InterruptedException {
+    public void tasksConflateSuchThatATaskWillExecuteAfterTaskRunningWithSameKey() throws InterruptedException {
         ControllableTestTask firstTask = new ControllableTestTask();
         taskRunner.executeConflating("Initial Task", "key1", firstTask);
         firstTask.waitForTaskToStart();
@@ -166,7 +166,7 @@ public class TestTasks {
     }
 
     @Test
-    public void testTasksConflateSoThatUnExecutedTasksDontRun() throws InterruptedException {
+    public void tasksShouldConflateSoThatUnExecutedTasksDontRun() throws InterruptedException {
         ControllableTestTask firstTask = new ControllableTestTask();
         taskRunner.executeConflating("Initial Task", "key1", firstTask);
         firstTask.waitForTaskToStart();
@@ -194,7 +194,7 @@ public class TestTasks {
     }
 
     @Test
-    public void testTasksConflateButDontInterfereWithOtherTasksIfTheyThrowAnException() throws Exception {
+    public void tasksConflateButDontInterfereWithOtherTasksIfTheyThrowAnException() throws Exception {
         ControllableTestTask firstTask = new ControllableTestTask();
         taskRunner.executeConflating("Initial Task", "key1", firstTask);
         firstTask.waitForTaskToStart();
@@ -219,6 +219,8 @@ public class TestTasks {
 
         assertThat("Only one of the increment counter tasks was executed", count.get(), is(1));
     }
+
+
 
     private static class ControllableTestTask implements LogFileTask {
         private CountDownLatch taskHasStarted = new CountDownLatch(1);

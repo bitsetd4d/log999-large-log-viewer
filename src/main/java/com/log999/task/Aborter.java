@@ -16,7 +16,7 @@ public class Aborter {
     }
 
     public boolean shouldAbort(long stampValue) {
-        return stamp.longValue() != stampValue;
+        return !shouldContinue(stampValue);
     }
 
     public boolean shouldContinue(long stampValue) {
