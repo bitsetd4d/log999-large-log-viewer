@@ -1,4 +1,4 @@
-package com.blinglog.poc.events;
+package com.log999.task.events;
 
 import java.util.function.Consumer;
 

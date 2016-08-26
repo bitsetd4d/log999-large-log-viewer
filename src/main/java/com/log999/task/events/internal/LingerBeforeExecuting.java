@@ -1,10 +1,8 @@
-package com.blinglog.poc.events.internal;
+package com.log999.task.events.internal;
 
-import com.blinglog.poc.events.EventFlowControl;
-import com.blinglog.poc.events.EventFlowUtil;
+import com.log999.task.events.EventFlowControl;
+import com.log999.task.events.EventFlowUtil;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**

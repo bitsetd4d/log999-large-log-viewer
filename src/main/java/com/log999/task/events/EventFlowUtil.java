@@ -1,9 +1,9 @@
-package com.blinglog.poc.events;
+package com.log999.task.events;
 
-import com.blinglog.poc.events.internal.ExecuteImmediatelyThenThrottleFlow;
-import com.blinglog.poc.events.internal.LingerBeforeExecuting;
-import com.blinglog.poc.events.internal.LingerBeforePublishPublisher;
-import com.blinglog.poc.events.internal.PublishThenThrottlePublisher;
+import com.log999.task.events.internal.ExecuteImmediatelyThenThrottleFlow;
+import com.log999.task.events.internal.LingerBeforeExecuting;
+import com.log999.task.events.internal.LingerBeforePublishPublisher;
+import com.log999.task.events.internal.PublishThenThrottlePublisher;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

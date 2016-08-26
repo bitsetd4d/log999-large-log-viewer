@@ -1,7 +1,7 @@
-package com.blinglog.poc.events.internal;
+package com.log999.task.events.internal;
 
-import com.blinglog.poc.events.EventFlowUtil;
-import com.blinglog.poc.events.ThrottledPublisher;
+import com.log999.task.events.EventFlowUtil;
+import com.log999.task.events.ThrottledPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,6 +24,7 @@ public class PublishThenThrottlePublisher<T> implements ThrottledPublisher<T> {
 
     @Override
     public synchronized void publish(T value) {
+        if (value.equals(this.value)) return;
         this.value = value;
         if (!throttled) {
             throttled = true;
@@ -44,6 +45,9 @@ public class PublishThenThrottlePublisher<T> implements ThrottledPublisher<T> {
     private void throttlePeriodEnd(T value) {
         if (value != this.value) {
             publishNow();  /* Pending value that needs publishing */
+        }
+        synchronized (this) {
+            throttled = false;
         }
     }
 

@@ -1,8 +1,5 @@
-package com.blinglog.poc.events;
+package com.log999.task.events;
 
-/**
- *
- */
 public interface EventFlowControl {
 
     void execute(Runnable runnable);
