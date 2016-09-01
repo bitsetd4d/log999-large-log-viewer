@@ -4,7 +4,7 @@ import com.blinglog.poc.file.LogFileDisplayRow;
 import com.blinglog.poc.file.LogFileLine;
 import com.blinglog.poc.file.LogFilePage;
 import com.blinglog.poc.file.LogFilePosition;
-import com.blinglog.poc.markup.MarkupMemory;
+import com.log999.markup.MarkupMemory;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
 import org.slf4j.Logger;

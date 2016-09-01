@@ -1,4 +1,4 @@
-package com.blinglog.poc.markup;
+package com.log999.markup;
 
 import javafx.scene.paint.Color;
 

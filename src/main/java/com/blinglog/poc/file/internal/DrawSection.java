@@ -1,8 +1,8 @@
 package com.blinglog.poc.file.internal;
 
 import com.blinglog.poc.control.internal.DisplayProperties;
-import com.blinglog.poc.markup.Markup;
-import com.blinglog.poc.markup.MarkupValue;
+import com.log999.markup.Markup;
+import com.log999.markup.MarkupValue;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;

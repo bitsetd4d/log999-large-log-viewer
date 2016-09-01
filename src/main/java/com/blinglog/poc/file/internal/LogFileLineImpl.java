@@ -2,14 +2,11 @@ package com.blinglog.poc.file.internal;
 
 import com.blinglog.poc.file.LogFileDisplayRow;
 import com.blinglog.poc.file.LogFileLine;
-import com.blinglog.poc.markup.LineMarkup;
-import com.blinglog.poc.markup.MarkupMemory;
-import javafx.scene.canvas.GraphicsContext;
+import com.log999.markup.LineMarkup;
+import com.log999.markup.MarkupMemory;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class LogFileLineImpl implements LogFileLine {
 

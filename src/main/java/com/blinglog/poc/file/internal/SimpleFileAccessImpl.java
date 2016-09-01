@@ -6,7 +6,7 @@ import com.log999.task.events.ThrottledPublisher;
 import com.blinglog.poc.file.LogFileAccess;
 import com.blinglog.poc.file.LogFilePage;
 import com.blinglog.poc.file.LogFilePosition;
-import com.blinglog.poc.markup.MarkupMemory;
+import com.log999.markup.MarkupMemory;
 import com.log999.task.TaskRunner;
 import javafx.application.Platform;
 import javafx.beans.property.*;

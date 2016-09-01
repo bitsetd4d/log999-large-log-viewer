@@ -1,9 +1,7 @@
 package com.blinglog.poc.file;
 
-import com.blinglog.poc.markup.LineMarkup;
+import com.log999.markup.LineMarkup;
 import javafx.scene.paint.Color;
-
-import java.util.List;
 
 public interface LogFileLine {
 
