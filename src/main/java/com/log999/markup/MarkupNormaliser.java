@@ -22,12 +22,12 @@ public class MarkupNormaliser {
         this.markups = markups;
     }
 
-    public List<Markup> normalise() {
+    public List<Markup> normalisedMarkups() {
         if (markups.size() < 2) return markups;
         newMarkups = new ArrayList<>();
         int max = markups.stream().mapToInt(m -> m.getEnd(0)).max().getAsInt();
         logger.info("Normalise {} markups -> {}",markups.size(),markups);
-        for (x = 0; x < max; x++) {
+        for (x = 0; x <= max; x++) {
             MarkupValue v = getMarkupValue();
             if (v == null) {
                 finishCurrentMarkupIfPresent();
@@ -46,7 +46,7 @@ public class MarkupNormaliser {
 
     private void finishCurrentMarkupIfPresent() {
         if (currentMarkup != null) {
-            currentMarkup.setEnd(x);
+            currentMarkup.setEnd(x-1);
             newMarkups.add(currentMarkup);
             currentMarkup = null;
         }
@@ -62,21 +62,19 @@ public class MarkupNormaliser {
         if (values.isEmpty()) return null;
         MarkupValue v = mergeMarkups(values);
         return v;
-//        Markup lastMarkup = markups.get(markups.size() - 1);
-//        if (x == lastMarkup.getStart(0)) return lastMarkup.getValue();
     }
 
     private List<MarkupValue> allApplicableMarkups() {
-        return markups.stream().filter(m -> x >= m.getStart(0) && x < m.getEnd(0)).map(m -> m.getValue()).collect(Collectors.toList());
+        return markups.stream().filter(m -> x >= m.getStart(0) && x <= m.getEnd(0)).map(m -> m.getValue()).collect(Collectors.toList());
     }
 
     private MarkupValue mergeMarkups(List<MarkupValue> values) {
-        return values.stream().reduce(null,(m1,m2) -> merge(m1,m2));
+        return values.stream().reduce(null, this::merge);
     }
 
     private MarkupValue merge(MarkupValue m1, MarkupValue m2) {
         if (m1 == null) return m2;
-        return new MarkupValue(m1,m2);
+        return m1.combinedWith(m2);
     }
 
 }

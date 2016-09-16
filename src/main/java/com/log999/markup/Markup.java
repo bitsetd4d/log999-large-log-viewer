@@ -4,6 +4,8 @@ import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 public class Markup {
 
     private static Logger logger = LoggerFactory.getLogger(Markup.class);
@@ -66,6 +68,21 @@ public class Markup {
 
     public MarkupValue getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Markup markup = (Markup) o;
+        return start == markup.start &&
+                end == markup.end &&
+                Objects.equals(value, markup.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(start, end, value);
     }
 
     @Override

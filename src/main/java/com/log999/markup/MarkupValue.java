@@ -4,52 +4,54 @@ import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
+
 public final class MarkupValue {
 
     private static Logger logger = LoggerFactory.getLogger(MarkupValue.class);
 
-    public boolean bold;
+    // TODO: Encapsulate back in and make immutable
     public Color bg;
     public Color fg;
+    public boolean bold;
 
     public MarkupValue() {
     }
 
-    public MarkupValue(MarkupValue m1, MarkupValue m2) {
-        bold = m1.bold || m2.bold;
-        bg = m1.bg;
-        fg = m1.fg;
-        if (m2.fg != null) fg = m2.fg;
-        if (m2.bg != null) bg = m2.bg;
+    public MarkupValue(Color bg, Color fg, boolean bold) {
+        this.bg = bg;
+        this.fg = fg;
+        this.bold = bold;
+    }
+
+    public MarkupValue combinedWith(MarkupValue other) {
+        Color bg = other.bg == null ? this.bg : other.bg;
+        Color fg = other.fg == null ? this.fg : other.fg;
+        boolean bold = this.bold || other.bold;
+        return new MarkupValue(bg, fg, bold);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         MarkupValue that = (MarkupValue) o;
-
-        if (bold != that.bold) return false;
-        if (bg != null ? !bg.equals(that.bg) : that.bg != null) return false;
-        return !(fg != null ? !fg.equals(that.fg) : that.fg != null);
-
+        return bold == that.bold &&
+                Objects.equals(bg, that.bg) &&
+                Objects.equals(fg, that.fg);
     }
 
     @Override
     public int hashCode() {
-        int result = (bold ? 1 : 0);
-        result = 31 * result + (bg != null ? bg.hashCode() : 0);
-        result = 31 * result + (fg != null ? fg.hashCode() : 0);
-        return result;
+        return Objects.hash(bg, fg, bold);
     }
 
     @Override
     public String toString() {
         return "MarkupValue{" +
-                "bold=" + bold +
-                ", bg=" + bg +
+                "bg=" + bg +
                 ", fg=" + fg +
+                ", bold=" + bold +
                 '}';
     }
 }

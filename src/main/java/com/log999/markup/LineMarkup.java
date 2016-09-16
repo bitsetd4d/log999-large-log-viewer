@@ -35,7 +35,7 @@ public class LineMarkup {
         function.accept(m);
         markups.add(m);
         MarkupNormaliser normaliser = new MarkupNormaliser(markups);
-        markups = normaliser.normalise();
+        markups = normaliser.normalisedMarkups();
     }
 
 }
