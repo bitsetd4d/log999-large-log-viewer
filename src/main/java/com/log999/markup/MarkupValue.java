@@ -6,29 +6,31 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
+import static java.util.Objects.requireNonNull;
+
 public final class MarkupValue {
 
     private static Logger logger = LoggerFactory.getLogger(MarkupValue.class);
 
-    // TODO: Encapsulate back in and make immutable
-    public Color bg;
-    public Color fg;
-    public boolean bold;
+    // TODO: Make immutable
+    private Color bg;
+    private Color fg;
+    private Boolean bold;
 
     public MarkupValue() {
     }
 
-    public MarkupValue(Color bg, Color fg, boolean bold) {
+    public MarkupValue(Color bg, Color fg) {
         this.bg = bg;
         this.fg = fg;
-        this.bold = bold;
     }
 
     public MarkupValue combinedWith(MarkupValue other) {
-        Color bg = other.bg == null ? this.bg : other.bg;
-        Color fg = other.fg == null ? this.fg : other.fg;
-        boolean bold = this.bold || other.bold;
-        return new MarkupValue(bg, fg, bold);
+        Color bg = other.getBg() == null ? this.getBg() : other.getBg();
+        Color fg = other.getFg() == null ? this.getFg() : other.getFg();
+        MarkupValue newMarkupValue = new MarkupValue(bg, fg);
+        newMarkupValue.bold = other.bold == null ? this.bold : other.bold;;
+        return newMarkupValue;
     }
 
     @Override
@@ -36,22 +38,56 @@ public final class MarkupValue {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MarkupValue that = (MarkupValue) o;
-        return bold == that.bold &&
-                Objects.equals(bg, that.bg) &&
-                Objects.equals(fg, that.fg);
+        return isBold() == that.isBold() &&
+                Objects.equals(getBg(), that.getBg()) &&
+                Objects.equals(getFg(), that.getFg());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(bg, fg, bold);
+        return Objects.hash(getBg(), getFg(), isBold());
     }
 
     @Override
     public String toString() {
         return "MarkupValue{" +
-                "bg=" + bg +
-                ", fg=" + fg +
-                ", bold=" + bold +
+                "bg=" + getBg() +
+                ", fg=" + getFg() +
+                ", bold=" + isBold() +
                 '}';
+    }
+
+    public Color getBg() {
+        return bg;
+    }
+
+    public void setBg(Color bg) {
+        requireNonNull(bg);
+        this.bg = bg;
+    }
+
+    public Color getFg() {
+        return fg;
+    }
+
+    public void setFg(Color fg) {
+        requireNonNull(fg);
+        this.fg = fg;
+    }
+
+    public boolean isBold() {
+        return bold == Boolean.TRUE;
+    }
+
+    public void setBold(boolean bold) {
+        this.bold = bold;
+    }
+
+    public boolean isBlank() {
+        return isBlank(fg) && isBlank(bg) && bold != Boolean.TRUE;
+    }
+
+    private boolean isBlank(Color color) {
+        return color == null || color.equals(Color.TRANSPARENT);
     }
 }

@@ -48,15 +48,15 @@ public class Markup {
     }
 
     public void setBold(boolean bold) {
-        value.bold = bold;
+        value.setBold(bold);
     }
 
     public void setBackground(Color bg) {
-        value.bg = bg;
+        value.setBg(bg);
     }
 
     public void setForeground(Color fg) {
-        value.fg = fg;
+        value.setFg(fg);
     }
 
     // http://stackoverflow.com/questions/3269434/whats-the-most-efficient-way-to-test-two-integer-ranges-for-overlap

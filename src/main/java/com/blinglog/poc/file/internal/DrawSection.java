@@ -28,7 +28,7 @@ public class DrawSection {
         gc.save();
         if (markup != null) {
             MarkupValue value = markup.getValue();
-            Color bg = value.bg;
+            Color bg = value.getBg();
             if (bg != null) {
                 gc.save();
                 gc.setFill(bg);
@@ -38,11 +38,11 @@ public class DrawSection {
                 gc.fillRect(x,top,w,h);
                 gc.restore();
             }
-            Color fg = value.fg;
+            Color fg = value.getFg();
             if (fg != null) {
                 gc.setFill(fg);
             }
-            if (value.bold) {
+            if (value.isBold()) {
                 gc.setFont(dp.boldFontProperty().get());
             } else {
                 gc.setFont(dp.fontProperty().get());

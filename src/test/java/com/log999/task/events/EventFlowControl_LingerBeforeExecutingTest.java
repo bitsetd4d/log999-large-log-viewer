@@ -8,7 +8,7 @@ import java.util.List;
 
 import static com.log999.task.TestUtil.sleepMs;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasSize;
 
 public class EventFlowControl_LingerBeforeExecutingTest {
@@ -54,7 +54,7 @@ public class EventFlowControl_LingerBeforeExecutingTest {
     private void singleTsksExecutedWithCorrectDelay() {
         assertThat(executionTimes, hasSize(1));
         long firstExecuted = executionTimes.get(0);
-        assertThat(firstExecuted - started, greaterThan(EXECUTION_INTERVAL));
+        assertThat(firstExecuted - started, greaterThanOrEqualTo(EXECUTION_INTERVAL));
     }
 
 }

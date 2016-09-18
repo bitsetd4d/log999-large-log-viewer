@@ -39,6 +39,7 @@ public class MarkupNormaliser {
             }
         }
         finishCurrentMarkupIfPresent();
+        newMarkups = newMarkups.stream().filter(m -> !m.getValue().isBlank()).collect(Collectors.toList());
         Collections.sort(newMarkups, (a, b) -> Integer.compare(a.getStart(0), b.getStart(0)));
         logger.info("Transformed to {} markups -> {}", newMarkups.size(),newMarkups);
         return newMarkups;

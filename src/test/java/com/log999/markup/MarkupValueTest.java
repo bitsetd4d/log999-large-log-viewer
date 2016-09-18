@@ -3,13 +3,16 @@ package com.log999.markup;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 
+import static com.log999.markup.matchers.MarkupMatchers.withBold;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 public class MarkupValueTest {
 
     private MarkupValue createMarkupValue(Color bg, Color fg, boolean bold) {
-        return new MarkupValue(bg, fg, bold);
+        MarkupValue markupValue = new MarkupValue(bg, fg);
+        markupValue.setBold(bold);
+        return markupValue;
     }
 
     @Test
@@ -67,10 +70,9 @@ public class MarkupValueTest {
     public void valuesCombine_Bold() throws Exception {
         MarkupValue a = createMarkupValue(null, null, false);
         MarkupValue b = createMarkupValue(null, null, true);
-        MarkupValue expected = createMarkupValue(null, null, true);
 
-        assertThat(a.combinedWith(b), is(equalTo(expected)));
-        assertThat(b.combinedWith(a), is(equalTo(expected)));
+        assertThat(a.combinedWith(b), withBold(true));
+        assertThat(b.combinedWith(a), withBold(false));
     }
 
     @Test
@@ -91,4 +93,73 @@ public class MarkupValueTest {
         assertThat(a.combinedWith(b), is(equalTo(expected)));
     }
 
+    @Test
+    public void isBlankMarkupIfNoValuesSet() {
+        MarkupValue markupValue = new MarkupValue();
+        assertThat(markupValue.isBlank(), is(equalTo(true)));
+    }
+
+    @Test
+    public void isBlankMarkupWhenValuesBoldReset() {
+        // Given
+        MarkupValue markupValue = new MarkupValue();
+        markupValue.setBold(true);
+        assertThat(markupValue.isBlank(), is(equalTo(false)));
+
+        // When
+        markupValue.setBold(false);
+        assertThat(markupValue.isBlank(), is(equalTo(true)));
+    }
+
+    @Test
+    public void isBlankMarkupWhenForegroundReset() {
+        // Given
+        MarkupValue markupValue = new MarkupValue();
+        markupValue.setFg(Color.BISQUE);
+        assertThat(markupValue.isBlank(), is(equalTo(false)));
+
+        // When
+        markupValue.setFg(Color.TRANSPARENT);
+        assertThat(markupValue.isBlank(), is(equalTo(true)));
+    }
+
+    @Test
+    public void isBlankMarkupWhenBackgroundReset() {
+        // Given
+        MarkupValue markupValue = new MarkupValue();
+        markupValue.setBg(Color.BISQUE);
+        assertThat(markupValue.isBlank(), is(equalTo(false)));
+
+        // When
+        markupValue.setBg(Color.TRANSPARENT);
+        assertThat(markupValue.isBlank(), is(equalTo(true)));
+    }
+
+    @Test
+    public void isBlankMarkupWhenAllReset() {
+        // Given
+        MarkupValue markupValue = new MarkupValue();
+        markupValue.setFg(Color.BISQUE);
+        markupValue.setBg(Color.BISQUE);
+        markupValue.setBold(true);
+        assertThat(markupValue.isBlank(), is(equalTo(false)));
+
+        // When
+        markupValue.setFg(Color.TRANSPARENT);
+        markupValue.setBg(Color.TRANSPARENT);
+        markupValue.setBold(false);
+        assertThat(markupValue.isBlank(), is(equalTo(true)));
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ensureNullIsNotAllowedForForeground() {
+        MarkupValue markupValue = new MarkupValue();
+        markupValue.setFg(null);
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void ensureNullIsNotAllowedForBackground() {
+        MarkupValue markupValue = new MarkupValue();
+        markupValue.setBg(null);
+    }
 }

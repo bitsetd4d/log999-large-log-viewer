@@ -26,13 +26,13 @@ public class MarkupMemoryImpl implements MarkupMemory {
 
     @Override
     public boolean isMarked(long line) {
-        return markedMap.getOrDefault(line,Boolean.FALSE) == true;
+        return markedMap.getOrDefault(line, Boolean.FALSE);
     }
 
     @Override
     public void setBold(long lineNumber, int start, int end) {
         LineMarkup lineMarkup = getFormatting(lineNumber);
-        lineMarkup.markBold(start,end);
+        lineMarkup.markBold(start, end, true);
     }
 
     @Override

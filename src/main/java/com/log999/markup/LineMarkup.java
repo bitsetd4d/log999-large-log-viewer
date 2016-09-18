@@ -18,8 +18,8 @@ public class LineMarkup {
         return markups;
     }
 
-    public void markBold(int start,int end) {
-        customise(start, end, m -> m.setBold(true));
+    public void markBold(int start, int end, boolean on) {
+        customise(start, end, m -> m.setBold(on));
     }
 
     public void markBackground(int start, int end, Color bg) {
