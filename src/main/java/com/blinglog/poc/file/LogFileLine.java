@@ -15,7 +15,7 @@ public interface LogFileLine {
 
     LineMarkup getLineMarkup();
 
-    void markBold(int start, int end);
+    void markBold(int start, int end, boolean bold);
     void markBackground(int start, int end, Color bg);
     void markForeground(int start, int end, Color bg);
 

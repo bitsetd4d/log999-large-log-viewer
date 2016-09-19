@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static com.log999.markup.matchers.MarkupMatchers.withRange;
+import static com.log999.markup.matchers.MarkupMatchers.hasRange;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -165,9 +165,9 @@ public class MarkupNormaliserTest {
 
         // Then
         assertThat(normalisedMarkups, hasSize(3));
-        assertThat(normalisedMarkups.get(0), withRange(1, 4));
-        assertThat(normalisedMarkups.get(1), withRange(5, 10));
-        assertThat(normalisedMarkups.get(2), withRange(11, 15));
+        assertThat(normalisedMarkups.get(0), hasRange(1, 4));
+        assertThat(normalisedMarkups.get(1), hasRange(5, 10));
+        assertThat(normalisedMarkups.get(2), hasRange(11, 15));
     }
 
     @Test
@@ -189,9 +189,9 @@ public class MarkupNormaliserTest {
 
         // Then
         assertThat(normalisedMarkups, hasSize(3));
-        assertThat(normalisedMarkups.get(0), withRange(1, 9));
-        assertThat(normalisedMarkups.get(1), withRange(10, 15));
-        assertThat(normalisedMarkups.get(2), withRange(16, 20));
+        assertThat(normalisedMarkups.get(0), hasRange(1, 9));
+        assertThat(normalisedMarkups.get(1), hasRange(10, 15));
+        assertThat(normalisedMarkups.get(2), hasRange(16, 20));
     }
 
     @Test
@@ -212,8 +212,8 @@ public class MarkupNormaliserTest {
 
         // Then
         assertThat(normalisedMarkups, hasSize(2));
-        assertThat(normalisedMarkups.get(0), withRange(1, 9));
-        assertThat(normalisedMarkups.get(1), withRange(16, 20));
+        assertThat(normalisedMarkups.get(0), hasRange(1, 9));
+        assertThat(normalisedMarkups.get(1), hasRange(16, 20));
     }
 
 }

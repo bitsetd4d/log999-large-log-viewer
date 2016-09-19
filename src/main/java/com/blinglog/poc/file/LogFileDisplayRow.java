@@ -8,7 +8,7 @@ public interface LogFileDisplayRow {
 
     String getText();
 
-    void markBold(int start, int end);
+    void markBold(int start, int end, boolean bold);
     void markSelectedBackground(int start, int end, Color bg);
     void markSelectedForeground(int start, int end, Color fg);
 

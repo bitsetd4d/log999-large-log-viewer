@@ -44,10 +44,10 @@ public class LogFileDisplayRowImpl implements LogFileDisplayRow {
     }
 
     @Override
-    public void markBold(int startx, int endx) {
+    public void markBold(int startx, int endx, boolean bold) {
         logger.info("Line {}/{} - MARK BOLD {} - {}",logFileLine.getLineNumber(), displayRowIndex,startx,endx);
         if (logFileLine != null) {
-            logFileLine.markBold(startx + offset,endx + offset);
+            logFileLine.markBold(startx + offset,endx + offset, bold);
         }
     }
 

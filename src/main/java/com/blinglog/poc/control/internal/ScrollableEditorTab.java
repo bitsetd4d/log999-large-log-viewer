@@ -161,7 +161,7 @@ public class ScrollableEditorTab extends Tab {
     }
 
     public void makeSelectedBold() {
-        textSelectionCanvas.makeSelectedBold();
+        textSelectionCanvas.makeSelectedBold(true);
         textDisplayCanvas.draw();
     }
 

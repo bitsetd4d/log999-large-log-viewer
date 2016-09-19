@@ -53,8 +53,8 @@ public class LogFileLineImpl implements LogFileLine {
     }
 
     @Override
-    public void markBold(int start, int end) {
-        markupMemory.setBold(lineNumber, start, end);
+    public void markBold(int start, int end, boolean bold) {
+        markupMemory.setBold(lineNumber, start, end, bold);
     }
 
     @Override

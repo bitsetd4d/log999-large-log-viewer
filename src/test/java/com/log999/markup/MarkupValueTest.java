@@ -3,7 +3,7 @@ package com.log999.markup;
 import javafx.scene.paint.Color;
 import org.junit.Test;
 
-import static com.log999.markup.matchers.MarkupMatchers.withBold;
+import static com.log999.markup.matchers.MarkupMatchers.isBold;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -71,8 +71,8 @@ public class MarkupValueTest {
         MarkupValue a = createMarkupValue(null, null, false);
         MarkupValue b = createMarkupValue(null, null, true);
 
-        assertThat(a.combinedWith(b), withBold(true));
-        assertThat(b.combinedWith(a), withBold(false));
+        assertThat(a.combinedWith(b), isBold(true));
+        assertThat(b.combinedWith(a), isBold(false));
     }
 
     @Test

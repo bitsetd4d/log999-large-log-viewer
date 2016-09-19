@@ -6,13 +6,25 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 import java.util.function.Consumer;
 
 public class LineMarkup {
 
     private static Logger logger = LoggerFactory.getLogger(LineMarkup.class);
 
+    private Observer observer;
+    private final long lineNumber;
     private List<Markup> markups = new ArrayList<>();
+
+    public LineMarkup(Observer observer, long lineNumber) {
+        this.observer = observer;
+        this.lineNumber = lineNumber;
+    }
+
+    public long getLineNumber() {
+        return lineNumber;
+    }
 
     public List<Markup> getMarkups() {
         return markups;
@@ -36,6 +48,11 @@ public class LineMarkup {
         markups.add(m);
         MarkupNormaliser normaliser = new MarkupNormaliser(markups);
         markups = normaliser.normalisedMarkups();
+        if (observer != null) observer.updated(this);
+    }
+
+    public interface Observer {
+        void updated(LineMarkup lineMarkup);
     }
 
 }

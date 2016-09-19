@@ -170,8 +170,8 @@ public class TextSelectionCanvas extends Canvas {
         gc.fillRect(x, adjustedY, w, h);
     }
 
-    public void makeSelectedBold() {
-        applyToSelection((start, end, line) -> line.markBold(start, end));
+    public void makeSelectedBold(boolean bold) {
+        applyToSelection((start, end, line) -> line.markBold(start, end, bold));
     }
 
     public void makeSelectedBackground(Color bg) {

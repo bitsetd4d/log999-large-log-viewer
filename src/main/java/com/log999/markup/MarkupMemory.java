@@ -9,7 +9,7 @@ public interface MarkupMemory {
     void setMarked(long from, long line,boolean marked);
     boolean isMarked(long line);
 
-    void setBold(long lineNumber, int start, int end);
+    void setBold(long lineNumber, int start, int end, boolean bold);
     void setBackground(long lineNumber, int start, int end, Color bg);
     void setForeground(long lineNumber, int start, int end, Color bg);
 
