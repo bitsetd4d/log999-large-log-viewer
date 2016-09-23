@@ -4,7 +4,7 @@ import com.log999.task.events.EventFlowControl;
 import com.log999.task.events.EventFlowUtil;
 import com.blinglog.poc.file.LogFileAccess;
 import com.blinglog.poc.file.LogFilePage;
-import com.blinglog.poc.file.LogFilePosition;
+import com.log999.util.LogFilePosition;
 import com.log999.markup.MarkupMemory;
 import javafx.application.Platform;
 import javafx.beans.property.*;

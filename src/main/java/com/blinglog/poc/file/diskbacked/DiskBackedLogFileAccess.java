@@ -1,12 +1,17 @@
 package com.blinglog.poc.file.diskbacked;
 
 import com.blinglog.poc.Globals;
+import com.log999.logchunk.DisplayableLogChunk;
+import com.log999.logchunk.LogChunkLoader;
+import com.log999.logchunk.internal.LogChunkLoaderImpl;
+import com.log999.logchunk.internal.LogChunksImpl;
+import com.log999.logchunk.LogChunks;
 import com.log999.task.events.EventFlowControl;
 import com.log999.task.events.EventFlowUtil;
 import com.log999.task.events.ThrottledPublisher;
 import com.blinglog.poc.file.LogFileAccess;
 import com.blinglog.poc.file.LogFilePage;
-import com.blinglog.poc.file.LogFilePosition;
+import com.log999.util.LogFilePosition;
 import com.blinglog.poc.file.internal.LogFilePageImpl;
 import com.log999.markup.MarkupMemory;
 import com.log999.task.TaskRunner;
@@ -42,10 +47,8 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
 
     private static boolean DEBUG = false;
 
-    //private String fileName = "/Users/pauletlogic/Documents/logs/fx-price-feed.log";
-    //private String fileName = "/Users/pauletlogic/Documents/logs/wp-duetadmin-wpdev2.log";
-
-    private LogChunkManager logChunks = new LogChunkManager();
+    private LogChunkLoader logLoader = new LogChunkLoaderImpl(); // todo inject
+    private LogChunks logChunks;
     private long lineCount;
     private MarkupMemory markupMemory;
 
@@ -66,7 +69,6 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
     }
 
     private void readFileFully(String fileName) throws IOException {
-        logChunks.setFileName(fileName);
         LineNumberReader reader = new LineNumberReader(new BufferedReader(new FileReader(fileName)));
         while (reader.ready()) {
             String line = reader.readLine();
@@ -77,7 +79,8 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
             addLineToChunk(line);
         }
         reader.close();
-        logChunks.fullyLoaded();
+        logLoader.fullyLoaded();
+        logChunks = logLoader.getLogChunks();
         Platform.runLater(() -> {
             fullyIndexedProperty.setValue(true);
             numberOfLinesProperty.set(lineCount);
@@ -101,13 +104,13 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
             return;
         }
         lineCount++;
-        logChunks.acceptLine(line);
+        logLoader.acceptLine(line);
     }
 
     private void calculateNumberOfLinesWithWordwrap() {
         TaskRunner.getInstance().execute("Calculating lines", () -> {
             long lineCount = 0;
-            long displayLineCount = logChunks.calculateLineWraps((short)lineWrapWidthProperty.get());
+            long displayLineCount = logChunks.calculateDisplayableLinesForLineWrap((short)lineWrapWidthProperty.get());
             Platform.runLater(() -> numberOfLinesProperty.setValue(displayLineCount));
             if (DEBUG) {
                 System.out.println("Number of visible lines is " + lineCount);
@@ -159,7 +162,7 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
     }
 
     private void publishCurrentPage() {
-        LogChunk chunk = logChunks.logChunkForDisplayRow(pageTop);
+        DisplayableLogChunk chunk = logChunks.logChunkForDisplayRow(pageTop);
         LogFilePosition position = chunk.getDisplayRow(pageTop);
         int rowsNeeded = pageSize + position.getWrappedLineWithinLine();
         if (!chunk.isLoaded()) {
@@ -180,7 +183,7 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
         TaskRunner.getInstance().executeConflating("Page","CPL",() -> publishLoadedChunkPage(chunk, position, rowsNeeded));
     }
 
-    private void publishHoldingPage(LogChunk chunk, LogFilePosition position, int rowsNeeded) {
+    private void publishHoldingPage(DisplayableLogChunk chunk, LogFilePosition position, int rowsNeeded) {
         logger.info("Publishing holding page");
         String[] rows = chunk.getHoldingRows(rowsNeeded, position.getRealLogLine());
         LogFilePageImpl page = new LogFilePageImpl(pageTop, pageSize, rows, true, lineWrapWidthProperty.get(), position, markupMemory);
@@ -188,7 +191,7 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
         Platform.runLater(() -> logFilePageProperty.setValue(page));
     }
 
-    private void publishLoadedChunkPage(LogChunk chunk, LogFilePosition position, int rowsNeeded) {
+    private void publishLoadedChunkPage(DisplayableLogChunk chunk, LogFilePosition position, int rowsNeeded) {
         logger.debug("Position {} found in chunk {}", position,chunk);
         if (DEBUG) logger.info("Display row " + pageTop + " is real Row " + position.getRealLogLine() + " - offset by " + position.getWrappedLineWithinLine());
         String[] rows = chunk.getRealRows(rowsNeeded,position.getRealLogLine());
@@ -203,8 +206,5 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
         logger.info("-----------------------------------------------");
         page.dumpToLog();
         logger.info("-----------------------------------------------");
-
     }
-
-
 }

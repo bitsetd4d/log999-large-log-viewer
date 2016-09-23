@@ -1,4 +1,4 @@
-package com.blinglog.poc.util;
+package com.log999.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

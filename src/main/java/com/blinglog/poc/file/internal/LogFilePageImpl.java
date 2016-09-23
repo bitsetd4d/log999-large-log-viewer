@@ -3,7 +3,7 @@ package com.blinglog.poc.file.internal;
 import com.blinglog.poc.file.LogFileDisplayRow;
 import com.blinglog.poc.file.LogFileLine;
 import com.blinglog.poc.file.LogFilePage;
-import com.blinglog.poc.file.LogFilePosition;
+import com.log999.util.LogFilePosition;
 import com.log999.markup.MarkupMemory;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;

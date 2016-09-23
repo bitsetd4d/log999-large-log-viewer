@@ -149,7 +149,7 @@ public class TaskRunner {
     }
 
     private void endTask(LogFileTask task, long t) {
-        int count = inProgress.decrementAndGet();
+        inProgress.decrementAndGet();
         String name = tasks.remove(task);
         String anotherRunningTaskName = null;
         try {

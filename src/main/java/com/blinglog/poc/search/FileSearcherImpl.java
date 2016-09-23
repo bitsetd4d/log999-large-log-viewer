@@ -1,29 +1,21 @@
 package com.blinglog.poc.search;
 
-import com.blinglog.poc.file.LogFileDisplayRow;
-import com.blinglog.poc.file.LogFileLine;
-import com.blinglog.poc.file.diskbacked.LogChunk;
 import com.blinglog.poc.util.IdGenerator;
+import com.log999.logchunk.LoadableLogChunk;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;
 import org.apache.lucene.index.*;
-import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.MMapDirectory;
-import org.apache.lucene.util.BytesRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
 
 public class FileSearcherImpl implements FileSearcher {
 
@@ -64,10 +56,10 @@ public class FileSearcherImpl implements FileSearcher {
     }
 
     @Override
-    public void index(LogChunk chunk) {
+    public void index(LoadableLogChunk chunk) {
         if (!available) return;
         try {
-            long start = chunk.getLineStart();
+            long start = chunk.getLogLineStartIndex();
             List<String> lines = chunk.getLines();
             for (int i = 0; i < lines.size(); i++) {
                 indexLine(start + i, lines.get(i));
