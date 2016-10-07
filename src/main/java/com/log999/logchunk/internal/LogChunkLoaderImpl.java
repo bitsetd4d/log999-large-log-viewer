@@ -1,8 +1,8 @@
 package com.log999.logchunk.internal;
 
-import com.log999.logchunk.LoadableLogChunk;
-import com.log999.logchunk.LogChunkLoader;
-import com.log999.logchunk.LogChunks;
+import com.log999.logfile.deprecated.chunkloader.LoadableLogChunk;
+import com.log999.logfile.deprecated.chunkloader.LogChunkLoader;
+import com.log999.logfile.deprecated.chunkloader.LogChunks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,13 +13,21 @@ public class LogChunkLoaderImpl implements LogChunkLoader {
 
     private static Logger logger = LoggerFactory.getLogger(LogChunksImpl.class);
 
-    private static final int MAX_BYTES_PER_CHUNK = 1024 * 1024 * 50;
+    private static final int DEFAULT_MAX_BYTES_PER_CHUNK = 1024 * 1024 * 50;
+
+    private final int maxBytesPerChunk;
 
     private int chunkCount;
     private List<LoadableLogChunk> chunks = new ArrayList<>();
-    private LoadableLogChunk currentChunk = new LogChunkImpl(chunkCount++, MAX_BYTES_PER_CHUNK);
+    private LoadableLogChunk currentChunk;
 
     public LogChunkLoaderImpl() {
+        this(DEFAULT_MAX_BYTES_PER_CHUNK);
+    }
+
+    public LogChunkLoaderImpl(int maxBytesPerChunk) {
+        this.maxBytesPerChunk = maxBytesPerChunk;
+        currentChunk = new LogChunkImpl(chunkCount++, maxBytesPerChunk);
         chunks.add(currentChunk);
     }
 
@@ -36,7 +44,7 @@ public class LogChunkLoaderImpl implements LogChunkLoader {
     }
 
     private void createNewLoadableLogChunk() {
-        LoadableLogChunk chunk = new LogChunkImpl(chunkCount++, MAX_BYTES_PER_CHUNK);
+        LoadableLogChunk chunk = new LogChunkImpl(chunkCount++, maxBytesPerChunk);
         currentChunk.linkToNextChunk(chunk);
         currentChunk.finishChunk();
         currentChunk = chunk;

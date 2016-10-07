@@ -1,11 +1,10 @@
 package com.blinglog.poc.file.diskbacked;
 
 import com.blinglog.poc.Globals;
-import com.log999.logchunk.DisplayableLogChunk;
-import com.log999.logchunk.LogChunkLoader;
+import com.log999.displaychunk.DisplayableLogChunk;
+import com.log999.logfile.deprecated.chunkloader.LogChunkLoader;
 import com.log999.logchunk.internal.LogChunkLoaderImpl;
-import com.log999.logchunk.internal.LogChunksImpl;
-import com.log999.logchunk.LogChunks;
+import com.log999.logfile.deprecated.chunkloader.LogChunks;
 import com.log999.task.events.EventFlowControl;
 import com.log999.task.events.EventFlowUtil;
 import com.log999.task.events.ThrottledPublisher;

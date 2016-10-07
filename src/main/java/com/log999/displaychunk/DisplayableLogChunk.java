@@ -1,7 +1,8 @@
-package com.log999.logchunk;
+package com.log999.displaychunk;
 
 import com.log999.util.LogFilePosition;
 
+// TODO Transform this into what DisplayChunks do
 public interface DisplayableLogChunk {
 
     LogFilePosition getDisplayRow(long pageTop);

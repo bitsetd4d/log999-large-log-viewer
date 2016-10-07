@@ -1,8 +1,8 @@
 package com.log999.logchunk.internal;
 
-import com.log999.logchunk.DisplayableLogChunk;
-import com.log999.logchunk.LoadableLogChunk;
-import com.log999.logchunk.LogChunks;
+import com.log999.displaychunk.DisplayableLogChunk;
+import com.log999.logfile.deprecated.chunkloader.LoadableLogChunk;
+import com.log999.logfile.deprecated.chunkloader.LogChunks;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,9 @@ public class LogChunksImpl implements LogChunks {
     }
 
     private LoadableLogChunk getLogChunk(long row) {
-        if (displayLineStarts == null) return chunks.get(0);
+        if (displayLineStarts == null) {
+            calculateDisplayableLinesForLineWrap(Short.MAX_VALUE);
+        }
         int idx = Arrays.binarySearch(displayLineStarts, row);
         if (idx >= 0) {
             return chunks.get(idx);

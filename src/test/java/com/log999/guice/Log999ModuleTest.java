@@ -2,7 +2,7 @@ package com.log999.guice;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import com.log999.logchunk.LogChunkLoader;
+import com.log999.logfile.deprecated.chunkloader.LogChunkLoader;
 import com.log999.logchunk.internal.LogChunkLoaderImpl;
 import org.junit.Test;
 

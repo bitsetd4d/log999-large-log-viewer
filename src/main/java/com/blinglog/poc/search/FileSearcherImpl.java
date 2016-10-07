@@ -1,7 +1,7 @@
 package com.blinglog.poc.search;
 
 import com.blinglog.poc.util.IdGenerator;
-import com.log999.logchunk.LoadableLogChunk;
+import com.log999.logfile.deprecated.chunkloader.LoadableLogChunk;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.*;

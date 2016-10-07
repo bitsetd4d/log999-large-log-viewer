@@ -1,7 +1,7 @@
 package com.log999.logchunk.internal;
 
-import com.log999.logchunk.DisplayableLogChunk;
-import com.log999.logchunk.LoadableLogChunk;
+import com.log999.displaychunk.DisplayableLogChunk;
+import com.log999.logfile.deprecated.chunkloader.LoadableLogChunk;
 import com.log999.util.LogFilePosition;
 import com.log999.util.MemoryCalculator;
 import org.slf4j.Logger;
@@ -243,8 +243,6 @@ public class LogChunkImpl implements LoadableLogChunk, DisplayableLogChunk {
                 ", chunk=" + chunk +
                 ", maxBytesInChunk=" + maxBytesInChunk +
                 ", lines=" + lines +
-                ", previous=" + previous +
-                ", next=" + next +
                 ", lineStart=" + lineStart +
                 ", longestLineLength=" + longestLineLength +
                 ", lineLengths=" + Arrays.toString(lineLengths) +

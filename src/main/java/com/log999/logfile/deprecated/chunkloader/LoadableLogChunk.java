@@ -1,4 +1,4 @@
-package com.log999.logchunk;
+package com.log999.logfile.deprecated.chunkloader;
 
 import java.util.List;
 

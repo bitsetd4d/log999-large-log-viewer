@@ -1,6 +1,7 @@
-package com.log999.logchunk;
+package com.log999.logfile.deprecated.chunkloader;
 
 import com.log999.logchunk.internal.LogChunkImpl;
+import com.log999.logfile.deprecated.chunkloader.LoadableLogChunk;
 import com.log999.util.MemoryCalculator;
 import org.junit.Before;
 import org.junit.Test;
