@@ -1,9 +1,11 @@
 package com.blinglog.poc.file.internal;
 
+import com.log999.display.internal.LogFilePageImpl;
+import com.log999.display.internal.LogFilePageImplBuilder;
 import com.log999.task.events.EventFlowControl;
 import com.log999.task.events.EventFlowUtil;
 import com.blinglog.poc.file.LogFileAccess;
-import com.blinglog.poc.file.LogFilePage;
+import com.log999.display.api.LogFilePage;
 import com.log999.util.LogFilePosition;
 import com.log999.markup.MarkupMemory;
 import javafx.application.Platform;
@@ -77,7 +79,7 @@ public class FakeFileAccessImpl implements LogFileAccess {
     private void newSetRangeOfInterest(int top,int bottom) {
         System.out.println("Top="+top+",bottom="+bottom);
         // Maybe only do this bit if search logic taking too long
-        LogFilePageImpl page = new LogFilePageImpl(top,bottom,null,true,200,new LogFilePosition(0,0),getMarkupMemory());
+        LogFilePageImpl page = new LogFilePageImplBuilder().setTopDisplayRow(top).setDisplayRowsToFill(bottom).setRows(null).setHoldingPage(true).setLineWrapLength(200).setPositionTopLine(new LogFilePosition(0, 0)).setMarkupMemory(getMarkupMemory()).createLogFilePageImpl();
         Platform.runLater(() -> logFilePageProperty.setValue(page));
         long distance = Math.abs(top - lastRead);
         distance = Math.min(5000,distance);
@@ -94,7 +96,7 @@ public class FakeFileAccessImpl implements LogFileAccess {
         for (int i=0; i<rows; i++) {
             testData[i] = "This is row "+(top+i);
         }
-        LogFilePageImpl page = new LogFilePageImpl(top,rows,testData,false,200,new LogFilePosition(0,0),getMarkupMemory());
+        LogFilePageImpl page = new LogFilePageImplBuilder().setTopDisplayRow(top).setDisplayRowsToFill(rows).setRows(testData).setHoldingPage(false).setLineWrapLength(200).setPositionTopLine(new LogFilePosition(0, 0)).setMarkupMemory(getMarkupMemory()).createLogFilePageImpl();
         Platform.runLater(() -> logFilePageProperty.setValue(page));
     }
 

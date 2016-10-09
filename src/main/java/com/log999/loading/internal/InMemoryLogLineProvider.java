@@ -1,7 +1,7 @@
-package com.log999.logfile.loglineprovider;
+package com.log999.loading.internal;
 
-import com.log999.logfile.api.LogLineProvider;
-import com.log999.logfile.api.StreamingLogLineProvider;
+import com.log999.loading.api.LogLineProvider;
+import com.log999.loading.api.StreamingLogLineProvider;
 
 import java.util.ArrayList;
 import java.util.List;

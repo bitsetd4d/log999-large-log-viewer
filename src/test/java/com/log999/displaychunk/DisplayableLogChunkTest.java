@@ -1,8 +1,6 @@
 package com.log999.displaychunk;
 
-import com.log999.displaychunk.DisplayableLogChunk;
-import com.log999.logchunk.internal.LogChunkImpl;
-import com.log999.util.LogFilePosition;
+import com.log999.deprecated.logchunk.internal.LogChunkImpl;
 import org.junit.Before;
 import org.junit.Test;
 

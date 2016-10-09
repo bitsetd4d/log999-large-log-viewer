@@ -1,4 +1,4 @@
-package com.log999.logfile.api;
+package com.log999.loading.api;
 
 public interface StreamingLogLineProvider {
 

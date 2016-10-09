@@ -2,6 +2,7 @@ package com.blinglog.poc.file;
 
 import com.blinglog.poc.file.diskbacked.DiskBackedLogFileAccess;
 import com.blinglog.poc.file.internal.SimpleFileAccessImpl;
+import com.log999.display.api.LogFilePage;
 import com.log999.markup.MarkupMemory;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;

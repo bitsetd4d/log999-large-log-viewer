@@ -1,8 +1,5 @@
-package com.blinglog.poc.file;
+package com.log999.display.api;
 
-/**
- *
- */
 public interface LogFilePage {
 
     boolean isHoldingPage();

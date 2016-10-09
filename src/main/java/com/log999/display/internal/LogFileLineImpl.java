@@ -1,7 +1,8 @@
-package com.blinglog.poc.file.internal;
+package com.log999.display.internal;
 
-import com.blinglog.poc.file.LogFileDisplayRow;
-import com.blinglog.poc.file.LogFileLine;
+import com.blinglog.poc.file.internal.LogFileDisplayRowImpl;
+import com.log999.display.api.LogFileDisplayRow;
+import com.log999.display.api.LogFileLine;
 import com.log999.markup.LineMarkup;
 import com.log999.markup.MarkupMemory;
 import javafx.scene.paint.Color;
@@ -16,13 +17,13 @@ public class LogFileLineImpl implements LogFileLine {
     private final MarkupMemory markupMemory;
     private final LogFileDisplayRow[] lines;
 
-    public LogFileLineImpl(long lineNumber,MarkupMemory markupMemory,String... lines) {
+    public LogFileLineImpl(long lineNumber, MarkupMemory markupMemory, String... lines) {
         this.lineNumber = lineNumber;
         this.markupMemory = markupMemory;
         this.lines = new LogFileDisplayRow[lines.length];
         int offset = 0;
-        for (int i=0; i<lines.length; i++) {
-            this.lines[i] = new LogFileDisplayRowImpl(this,offset,lines[i],i);
+        for (int i = 0; i < lines.length; i++) {
+            this.lines[i] = new LogFileDisplayRowImpl(this, offset, lines[i], i);
             offset += lines[i].length();
         }
     }

@@ -1,6 +1,6 @@
 package com.log999.logfile.loglineprovider;
 
-import com.log999.logfile.api.StreamingLogLineProvider;
+import com.log999.loading.api.StreamingLogLineProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.log999.logfile.deprecated.chunkloader;
+package com.log999.deprecated.chunkloader;
 
 import com.log999.displaychunk.DisplayableLogChunk;
 

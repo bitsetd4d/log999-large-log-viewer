@@ -1,7 +1,7 @@
-package com.log999.logchunk.internal;
+package com.log999.deprecated.logchunk.internal;
 
 import com.log999.displaychunk.DisplayableLogChunk;
-import com.log999.logfile.deprecated.chunkloader.LoadableLogChunk;
+import com.log999.deprecated.chunkloader.LoadableLogChunk;
 import com.log999.util.LogFilePosition;
 import com.log999.util.MemoryCalculator;
 import org.slf4j.Logger;

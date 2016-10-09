@@ -1,10 +1,12 @@
 package com.blinglog.poc.file.internal;
 
 import com.blinglog.poc.Globals;
+import com.log999.display.internal.LogFilePageImpl;
+import com.log999.display.internal.LogFilePageImplBuilder;
 import com.log999.task.events.EventFlowUtil;
 import com.log999.task.events.ThrottledPublisher;
 import com.blinglog.poc.file.LogFileAccess;
-import com.blinglog.poc.file.LogFilePage;
+import com.log999.display.api.LogFilePage;
 import com.log999.util.LogFilePosition;
 import com.log999.markup.MarkupMemory;
 import com.log999.task.TaskRunner;
@@ -168,7 +170,7 @@ public class SimpleFileAccessImpl implements LogFileAccess {
                 rows[i] = "..ENDOFFILE..";
             }
         }
-        LogFilePageImpl page = new LogFilePageImpl(pageTop,pageSize,rows,false,lineWrapWidthProperty.get(),position,markupMemory);
+        LogFilePageImpl page = new LogFilePageImplBuilder().setTopDisplayRow(pageTop).setDisplayRowsToFill(pageSize).setRows(rows).setHoldingPage(false).setLineWrapLength(lineWrapWidthProperty.get()).setPositionTopLine(position).setMarkupMemory(markupMemory).createLogFilePageImpl();
         if (DEBUG) {
             dumpPageToLog(page);
         }

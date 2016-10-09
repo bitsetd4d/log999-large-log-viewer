@@ -1,7 +1,8 @@
 package com.blinglog.poc.file.internal;
 
 import com.blinglog.poc.control.internal.DisplayProperties;
-import com.blinglog.poc.file.LogFileDisplayRow;
+import com.log999.display.api.LogFileDisplayRow;
+import com.log999.display.internal.LogFileLineImpl;
 import com.log999.markup.LineMarkup;
 import com.log999.markup.Markup;
 import javafx.scene.canvas.GraphicsContext;

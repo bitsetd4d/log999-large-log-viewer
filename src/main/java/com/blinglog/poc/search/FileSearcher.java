@@ -1,6 +1,6 @@
 package com.blinglog.poc.search;
 
-import com.log999.logfile.deprecated.chunkloader.LoadableLogChunk;
+import com.log999.deprecated.chunkloader.LoadableLogChunk;
 
 public interface FileSearcher {
 

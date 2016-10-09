@@ -1,8 +1,8 @@
 package com.blinglog.poc.control.internal;
 
 import com.blinglog.poc.file.LogFileAccess;
-import com.blinglog.poc.file.LogFileDisplayRow;
-import com.blinglog.poc.file.LogFilePage;
+import com.log999.display.api.LogFileDisplayRow;
+import com.log999.display.api.LogFilePage;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.canvas.Canvas;

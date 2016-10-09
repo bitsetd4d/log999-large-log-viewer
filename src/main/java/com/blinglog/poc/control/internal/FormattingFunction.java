@@ -1,6 +1,6 @@
 package com.blinglog.poc.control.internal;
 
-import com.blinglog.poc.file.LogFileDisplayRow;
+import com.log999.display.api.LogFileDisplayRow;
 
 public interface FormattingFunction {
 

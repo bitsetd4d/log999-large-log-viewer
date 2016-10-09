@@ -1,17 +1,18 @@
 package com.blinglog.poc.file.diskbacked;
 
 import com.blinglog.poc.Globals;
+import com.log999.display.internal.LogFilePageImplBuilder;
 import com.log999.displaychunk.DisplayableLogChunk;
-import com.log999.logfile.deprecated.chunkloader.LogChunkLoader;
-import com.log999.logchunk.internal.LogChunkLoaderImpl;
-import com.log999.logfile.deprecated.chunkloader.LogChunks;
+import com.log999.deprecated.chunkloader.LogChunkLoader;
+import com.log999.deprecated.logchunk.internal.LogChunkLoaderImpl;
+import com.log999.deprecated.chunkloader.LogChunks;
 import com.log999.task.events.EventFlowControl;
 import com.log999.task.events.EventFlowUtil;
 import com.log999.task.events.ThrottledPublisher;
 import com.blinglog.poc.file.LogFileAccess;
-import com.blinglog.poc.file.LogFilePage;
+import com.log999.display.api.LogFilePage;
 import com.log999.util.LogFilePosition;
-import com.blinglog.poc.file.internal.LogFilePageImpl;
+import com.log999.display.internal.LogFilePageImpl;
 import com.log999.markup.MarkupMemory;
 import com.log999.task.TaskRunner;
 import javafx.application.Platform;
@@ -185,7 +186,7 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
     private void publishHoldingPage(DisplayableLogChunk chunk, LogFilePosition position, int rowsNeeded) {
         logger.info("Publishing holding page");
         String[] rows = chunk.getHoldingRows(rowsNeeded, position.getRealLogLine());
-        LogFilePageImpl page = new LogFilePageImpl(pageTop, pageSize, rows, true, lineWrapWidthProperty.get(), position, markupMemory);
+        LogFilePageImpl page = new LogFilePageImplBuilder().setTopDisplayRow(pageTop).setDisplayRowsToFill(pageSize).setRows(rows).setHoldingPage(true).setLineWrapLength(lineWrapWidthProperty.get()).setPositionTopLine(position).setMarkupMemory(markupMemory).createLogFilePageImpl();
         logger.info("Publishing holding page --> {}",page);
         Platform.runLater(() -> logFilePageProperty.setValue(page));
     }
@@ -194,7 +195,7 @@ public class DiskBackedLogFileAccess implements LogFileAccess {
         logger.debug("Position {} found in chunk {}", position,chunk);
         if (DEBUG) logger.info("Display row " + pageTop + " is real Row " + position.getRealLogLine() + " - offset by " + position.getWrappedLineWithinLine());
         String[] rows = chunk.getRealRows(rowsNeeded,position.getRealLogLine());
-        LogFilePageImpl page = new LogFilePageImpl(pageTop, pageSize, rows, false, lineWrapWidthProperty.get(), position, markupMemory);
+        LogFilePageImpl page = new LogFilePageImplBuilder().setTopDisplayRow(pageTop).setDisplayRowsToFill(pageSize).setRows(rows).setHoldingPage(false).setLineWrapLength(lineWrapWidthProperty.get()).setPositionTopLine(position).setMarkupMemory(markupMemory).createLogFilePageImpl();
         if (DEBUG) {
             dumpPageToLog(page);
         }

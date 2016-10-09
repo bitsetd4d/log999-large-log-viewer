@@ -1,8 +1,8 @@
 package com.blinglog.poc.control.internal;
 
 import com.blinglog.poc.file.LogFileAccess;
-import com.blinglog.poc.file.LogFileLine;
-import com.blinglog.poc.file.LogFilePage;
+import com.log999.display.api.LogFileLine;
+import com.log999.display.api.LogFilePage;
 import com.blinglog.poc.util.AwesomeIcon;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;

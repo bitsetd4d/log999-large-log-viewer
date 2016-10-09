@@ -1,6 +1,7 @@
 package com.log999.logfile.loglineprovider;
 
-import com.log999.logfile.api.StreamingLogLineProvider;
+import com.log999.loading.api.StreamingLogLineProvider;
+import com.log999.loading.internal.InMemoryLogLineProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

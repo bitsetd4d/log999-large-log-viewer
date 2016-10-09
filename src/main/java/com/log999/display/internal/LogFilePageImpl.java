@@ -1,12 +1,13 @@
-package com.blinglog.poc.file.internal;
+package com.log999.display.internal;
 
-import com.blinglog.poc.file.LogFileDisplayRow;
-import com.blinglog.poc.file.LogFileLine;
-import com.blinglog.poc.file.LogFilePage;
-import com.log999.util.LogFilePosition;
-import com.log999.markup.MarkupMemory;
+import com.blinglog.poc.file.internal.LogFileDisplayRowImpl;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Iterables;
+import com.log999.display.api.LogFileDisplayRow;
+import com.log999.display.api.LogFileLine;
+import com.log999.display.api.LogFilePage;
+import com.log999.markup.MarkupMemory;
+import com.log999.util.LogFilePosition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,15 +26,13 @@ public class LogFilePageImpl implements LogFilePage {
     private final boolean holdingPage;          // true if a holding page
     private final int lineWrapLength;           // The width for line wrap
     private final LogFilePosition positionTopLine;
-//    private final long realFirstRowLineNumber;  // The actual underlying row for the top row
-//    private final int firstLineOffset;
     private final MarkupMemory markupMemory;
 
     private List<LogFileLine> logFileLines = new ArrayList<>(100);
     private List<LogFileDisplayRow> displayLogFileLines = new ArrayList<>(100);
     private List<LogFileLine> logLinesForDisplayRows = new ArrayList<>(100);  // Will contain duplicate LogFileLines
 
-    public LogFilePageImpl(long topDisplayRow, int displayRowsToFill, String[] rows,boolean holdingPage,int lineWrapLength,LogFilePosition positionTopLine,MarkupMemory markupMemory) {
+    LogFilePageImpl(long topDisplayRow, int displayRowsToFill, String[] rows, boolean holdingPage, int lineWrapLength, LogFilePosition positionTopLine, MarkupMemory markupMemory) {
         this.topDisplayRow = topDisplayRow;
         this.displayRowsToFill = displayRowsToFill;
         this.holdingPage = holdingPage;
@@ -44,32 +43,29 @@ public class LogFilePageImpl implements LogFilePage {
     }
 
     private void createLogFileLines(String[] rawText) {
-        long t1 = System.currentTimeMillis();
         int displayRowCount = 0;
-        for (int i=0; i<rawText.length; i++) {
+        for (int i = 0; i < rawText.length; i++) {
             long displayLineNumber = 1 + positionTopLine.getRealLogLine() + i;
-            String line = rawText[i];
-            if (line.length() > lineWrapLength) {
-                String[] wrapped = wrapLine(line);
-                LogFileLineImpl logFileLine = new LogFileLineImpl(displayLineNumber,markupMemory,wrapped);
-                logFileLines.add(logFileLine);
-                displayRowCount += wrapped.length;
-                addToDisplay(logFileLine);
-            } else {
-                LogFileLineImpl logFileLine = new LogFileLineImpl(displayLineNumber,markupMemory,rawText[i]);
-                logFileLines.add(logFileLine);
-                displayRowCount++;
-                addToDisplay(logFileLine);
-            }
+            int linesAdded = addLogFileLine(displayLineNumber, rawText[i]);
+            displayRowCount += linesAdded;
             if (displayRowCount - positionTopLine.getWrappedLineWithinLine() > displayRowsToFill) {
                 break;
             }
         }
-        long t2 = System.currentTimeMillis();
-        long time = t2 - t1;
-        if (time > 50) {
-            logger.warn("Page took {}ms to calculate - top row {}",topDisplayRow);
+    }
+
+    private int addLogFileLine(long displayLineNumber, String line) {
+        if (line.length() > lineWrapLength) {
+            String[] wrapped = wrapLine(line);
+            LogFileLineImpl logFileLine = new LogFileLineImpl(displayLineNumber, markupMemory, wrapped);
+            logFileLines.add(logFileLine);
+            addToDisplay(logFileLine);
+            return wrapped.length;
         }
+        LogFileLineImpl logFileLine = new LogFileLineImpl(displayLineNumber, markupMemory, line);
+        logFileLines.add(logFileLine);
+        addToDisplay(logFileLine);
+        return 1;
     }
 
     private void addToDisplay(LogFileLine line) {
@@ -115,28 +111,23 @@ public class LogFilePageImpl implements LogFilePage {
         try {
             int idx = displayRowIndex + positionTopLine.getWrappedLineWithinLine();
             if (idx >= displayLogFileLines.size()) {
-                return new LogFileDisplayRowImpl(null,0,"//Overflow",displayRowIndex);
+                return new LogFileDisplayRowImpl(null, 0, "//Overflow", displayRowIndex);
             }
             return displayLogFileLines.get(idx);
         } catch (RuntimeException e) {
-            logger.warn("Asked for {} (Pos {}) - {}",displayRowIndex, positionTopLine,e.toString());
-            return new LogFileDisplayRowImpl(null,0,"ERR [" + displayRowIndex + " - "+ positionTopLine + "] : " + e.toString(),displayRowIndex);
+            logger.warn("Asked for {} (Pos {}) - {}", displayRowIndex, positionTopLine, e.toString());
+            return new LogFileDisplayRowImpl(null, 0, "ERR [" + displayRowIndex + " - " + positionTopLine + "] : " + e.toString(), displayRowIndex);
         }
     }
 
     @Override
     public LogFileLine getLogFileLineForDisplayRow(int displayRowIndex) {
-//        if (isHoldingPage()) {
-//            LogFileLine dummyLine = new LogFileLineImpl(1 + topDisplayRow + displayRowIndex, markupMemory, "");
-//            return dummyLine;
-//        }
         return logLinesForDisplayRows.get(displayRowIndex);
     }
 
     private String[] wrapLine(String line) {
         Iterable<String> result = Splitter.fixedLength(lineWrapLength).split(line);
-        String[] parts = Iterables.toArray(result, String.class);
-        return parts;
+        return Iterables.toArray(result, String.class);
     }
 
     @Override
@@ -152,12 +143,12 @@ public class LogFilePageImpl implements LogFilePage {
     }
 
     public void dumpToLog() {
-        logger.info("\n\n============================\n\n{}\n\n",this);
+        logger.info("\n\n============================\n\n{}\n\n", this);
         final int max = 60;
-        for (int i=0; i< displayLogFileLines.size(); i++) {
+        for (int i = 0; i < displayLogFileLines.size(); i++) {
             displayLogFileLines.get(i).dumpToLog(i);
             if (i > max) {
-                logger.info("... and so on up to {}",displayLogFileLines.size());
+                logger.info("... and so on up to {}", displayLogFileLines.size());
                 break;
             }
         }
