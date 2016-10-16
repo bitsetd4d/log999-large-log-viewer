@@ -50,12 +50,23 @@ public class LogFileDisplayImplTest {
 
     @Test
     public void setLineWrapWidth() throws Exception {
+        // Given
+        ObjectProperty<LogFilePage> logFilePageObjectProperty = underTest.logFilePageProperty();
+        AtomicReference<LogFilePage> pageHolder = new AtomicReference<>();
+        logFilePageObjectProperty.addListener((obs, oldValue, newValue) -> pageHolder.set(newValue));
 
-    }
+        // When
+        underTest.setRangeOfInterest(2, 99);
+        assertThat(pageHolder.get(), is(notNullValue()));
+        pageHolder.set(null);
+        underTest.setLineWrapWidth(4);
+        assertThat(pageHolder.get(), is(notNullValue()));
 
-    @Test
-    public void setRangeOfInterest() throws Exception {
-
+        // Then
+        LogFilePage logFilePage = pageHolder.get();
+        assertThat(logFilePage, is(notNullValue()));
+        assertThat(logFilePage.getDisplayRowCount(), equalTo(6));
+        assertThat(logFilePage.getRow(0).getDisplayRows()[0].getText(), equalTo("ROW2"));
     }
 
     @Test
@@ -71,9 +82,7 @@ public class LogFileDisplayImplTest {
         assertThat(logFilePage, is(nullValue()));
 
         AtomicReference<LogFilePage> pageHolder = new AtomicReference<>();
-        logFilePageObjectProperty.addListener((obs, oldValue, newValue) -> {
-            pageHolder.set(newValue);
-        });
+        logFilePageObjectProperty.addListener((obs, oldValue, newValue) -> pageHolder.set(newValue));
 
         // when
         underTest.setRangeOfInterest(2, 2);

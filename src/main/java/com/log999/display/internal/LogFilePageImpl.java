@@ -46,7 +46,9 @@ public class LogFilePageImpl implements LogFilePage {
         int displayRowCount = 0;
         for (int i = 0; i < rawText.length; i++) {
             long displayLineNumber = 1 + positionTopLine.getRealLogLine() + i;
-            int linesAdded = addLogFileLine(displayLineNumber, rawText[i]);
+            String lineText = rawText[i];
+            if (lineText == null) break;
+            int linesAdded = addLogFileLine(displayLineNumber, lineText);
             displayRowCount += linesAdded;
             if (displayRowCount - positionTopLine.getWrappedLineWithinLine() > displayRowsToFill) {
                 break;

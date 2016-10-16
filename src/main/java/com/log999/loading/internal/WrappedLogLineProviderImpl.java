@@ -34,8 +34,10 @@ public class WrappedLogLineProviderImpl implements WrappedLogLineProvider {
         while (true) {
             String realLine = logLineProvider.getLine(logIdx);
             if (realLine == null) return null; // End of file
-            int linesOccupiedByRealLogLine = 1 + realLine.length() / wrap;
-            if (displayIdx + linesOccupiedByRealLogLine > targetDisplayIdx) return wrappedLine(realLine, displayIdx, targetDisplayIdx);
+            int linesOccupiedByRealLogLine = 1 + ((realLine.length() - 1 ) / wrap);
+            if (displayIdx + linesOccupiedByRealLogLine > targetDisplayIdx) {
+                return wrappedLine(realLine, displayIdx, targetDisplayIdx);
+            }
             displayIdx += linesOccupiedByRealLogLine;
             logIdx++;
         }
