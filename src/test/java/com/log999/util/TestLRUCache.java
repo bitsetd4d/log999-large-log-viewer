@@ -13,6 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TestLRUCache {
@@ -38,7 +39,7 @@ public class TestLRUCache {
 
         // Then
         assertThat(cache.size(), equalTo(4));
-        Mockito.verify(consumer, never()).accept(anyString());
+        verify(consumer, never()).accept(anyString());
     }
 
     @Test
@@ -58,7 +59,7 @@ public class TestLRUCache {
 
         // Then
         assertThat(cache.size(), equalTo(5));
-        Mockito.verify(consumer, never()).accept(anyString());
+        verify(consumer, never()).accept(anyString());
     }
 
     @Test
@@ -73,6 +74,6 @@ public class TestLRUCache {
         cache.put("key6", "value6");
         // Then
         assertThat(cache.size(), equalTo(5));
-        Mockito.verify(consumer, Mockito.times(1)).accept("key1");
+        verify(consumer, Mockito.times(1)).accept("key1");
     }
 }

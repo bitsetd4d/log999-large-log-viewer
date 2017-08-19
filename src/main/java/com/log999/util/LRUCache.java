@@ -21,6 +21,7 @@ public class LRUCache<K, V> extends LinkedHashMap<K, V> {
         this.consumer = consumer;
     }
 
+    @Override
     protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
         boolean evict = size() > cacheSize;
         if (evict) {
