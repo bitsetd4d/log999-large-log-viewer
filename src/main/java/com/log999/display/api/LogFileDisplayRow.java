@@ -9,8 +9,8 @@ public interface LogFileDisplayRow {
     String getText();
 
     void markBold(int start, int end, boolean bold);
-    void markSelectedBackground(int start, int end, Color bg);
-    void markSelectedForeground(int start, int end, Color fg);
+    void markBackground(int start, int end, Color bg);
+    void markForeground(int start, int end, Color fg);
 
     void drawText(GraphicsContext gc, double x, double y, DisplayProperties displayProperties);
 

@@ -1,6 +1,7 @@
 package com.blinglog.poc.file.internal;
 
 import com.blinglog.poc.control.internal.DisplayProperties;
+import com.google.common.annotations.VisibleForTesting;
 import com.log999.markup.Markup;
 import com.log999.markup.MarkupValue;
 import javafx.scene.canvas.GraphicsContext;
@@ -22,6 +23,11 @@ public class DrawSection {
 
     public int getLength() {
         return textBlock.length();
+    }
+
+    @VisibleForTesting
+    Markup getMarkup() {
+        return markup;
     }
 
     void draw(GraphicsContext gc, double x, double y, DisplayProperties dp) {

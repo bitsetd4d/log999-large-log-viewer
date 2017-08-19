@@ -175,11 +175,11 @@ public class TextSelectionCanvas extends Canvas {
     }
 
     public void makeSelectedBackground(Color bg) {
-        applyToSelection((start,end,line) -> line.markSelectedBackground(start, end, bg));
+        applyToSelection((start,end,line) -> line.markBackground(start, end, bg));
     }
 
     public void makeSelectedForeground(Color fg) {
-        applyToSelection((start,end,line) -> line.markSelectedForeground(start, end, fg));
+        applyToSelection((start,end,line) -> line.markForeground(start, end, fg));
     }
 
     public void applyToSelection(FormattingFunction f) {
